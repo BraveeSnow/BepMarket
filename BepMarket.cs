@@ -13,7 +13,7 @@ public class BepMarket : BaseUnityPlugin
 {
     private const string PLUGIN_GUID = "BraveeSnow.BepMarket";
     private const string PLUGIN_NAME = "BepMarket";
-    private const string PLUGIN_VERSION = "1.0";
+    private const string PLUGIN_VERSION = "0.1.0";
 
     private static readonly Harmony harmony = new Harmony(PLUGIN_GUID);
     internal static new ManualLogSource Logger;
