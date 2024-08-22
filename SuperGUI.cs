@@ -172,7 +172,9 @@ namespace BepMarket
             {
                 GUI.Label(
                     new Rect(4, labelHeight, 256, 20),
-                    $"{LocalizationManager.instance.GetLocalizationString("product" + product.productID)}: {products.productPlayerPricing[product.productID].ToString("c2")} -> {(product.basePricePerUnit * 2).ToString("c2")}",
+                    $"{LocalizationManager.instance.GetLocalizationString("product" + product.productID)}: " +
+                        $"{products.productPlayerPricing[product.productID].ToString("c2")} -> " +
+                        $"{(CalculateInflatedPrice(product) * 2).ToString("c2")}",
                     priceLabelStyle
                 );
                 labelHeight -= 24;
@@ -205,7 +207,7 @@ namespace BepMarket
                 productData = products.productPrefabs[id].GetComponent<Data_Product>();
                 playerPrice = products.productPlayerPricing[id];
 
-                if (Mathf.Abs(playerPrice - productData.basePricePerUnit * 2) > 0.1)
+                if (Mathf.Abs(playerPrice - (CalculateInflatedPrice(productData) * 2)) > 0.1)
                 {
                     lowPriceProducts.Add(productData);
                 }
@@ -219,10 +221,22 @@ namespace BepMarket
             Data_Product productData = products.productPrefabs[productId].GetComponent<Data_Product>();
             float playerPrice = products.productPlayerPricing[productId];
 
-            if (Mathf.Abs(playerPrice - productData.basePricePerUnit * 2) <= 0.1)
+            if (Mathf.Abs(playerPrice - (CalculateInflatedPrice(productData) * 2)) <= 0.1)
             {
                 lowPriceProducts.Remove(productData);
             }
+        }
+
+        private float CalculateInflatedPrice(Data_Product product)
+        {
+            // inflation array does not get updated when new items get unlocked, so it should be
+            // safe to assume the price will remain unchanged
+            if (product.productID >= products.tierInflation.Count())
+            {
+                return product.basePricePerUnit;
+            }
+
+            return product.basePricePerUnit * products.tierInflation[product.productID];
         }
 
         private void Update()
