@@ -225,6 +225,11 @@ namespace BepMarket
             {
                 lowPriceProducts.Remove(productData);
             }
+
+            if (lowPriceProducts.Count == 0)
+            {
+                pricesUpdated = true;
+            }
         }
 
         private float CalculateInflatedPrice(Data_Product product)
